@@ -51,6 +51,8 @@ const toast = document.getElementById("toast");
 
 const quizProgress = document.getElementById("quizProgress");
 
+const darkModeToggle = document.getElementById("darkModeToggle");
+
 ///////////////////////////////////////////////////////
 
 quizAnswer.style.display = "block";
@@ -249,7 +251,6 @@ function populateQuizTags() {
         quizTag.appendChild(option);
     });
 }
-
 
 function startQuiz() {
 
@@ -467,6 +468,20 @@ function updateProgress() {
     const percent = ((currentIndex) / quizWords.length) * 100;
     quizProgress.style.width = `${percent}%`;
 }
+
+darkModeToggle.onclick = () => {
+    document.body.classList.toggle("dark");
+
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("darkMode", isDark);
+};
+
+// Restore preference
+if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark");
+}
+
+////////////////////////////////////////////////////
 
 searchInput.oninput = renderWords;
 categoryFilter.onchange = renderWords;

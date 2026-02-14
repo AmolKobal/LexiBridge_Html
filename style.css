@@ -260,3 +260,34 @@ li.learned {
     background: #4f46e5;
     transition: width 0.3s ease;
 }
+
+/* Dark Mode Styles */
+
+body.dark {
+    background: #111827;
+    color: #f9fafb;
+}
+
+body.dark .card {
+    background: #1f2933;
+    color: #f9fafb;
+}
+
+body.dark input,
+body.dark select {
+    background: #111827;
+    color: white;
+    border: 1px solid #374151;
+}
+
+body.dark li {
+    background: #1f2933;
+}
+
+body.dark .progress {
+    background: #374151;
+}
+
+body.dark .quiz-box {
+    background: #1f2933;
+}
