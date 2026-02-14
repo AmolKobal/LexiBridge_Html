@@ -47,6 +47,16 @@ const confirmNo = document.getElementById("confirmNo");
 
 let confirmCallback = null;
 
+const toast = document.getElementById("toast");
+
+function showToast(message, type = "info") {
+    toast.textContent = message;
+    toast.className = `toast show ${type}`;
+
+    setTimeout(() => {
+        toast.className = "toast hidden";
+    }, 2000);
+}
 
 ///////////////////////////////////////////////////////
 
@@ -139,7 +149,6 @@ function renderWords() {
     updateStats();
 }
 
-
 function loadForEdit(index) {
     const word = vocabulary[index];
 
@@ -196,6 +205,8 @@ addBtn.onclick = () => {
     populateQuizTags();
     updateStats();
     renderWords(searchInput.value);
+
+    showToast("Word saved!", "success");
 };
 
 searchInput.oninput = (e) => {
@@ -296,9 +307,11 @@ submitAnswerBtn.onclick = () => {
         score++;
         quizFeedback.textContent = "✅ Correct!";
         quizFeedback.className = "correct";
+        showToast("Correct answer!", "success");
     } else {
         quizFeedback.textContent = `❌ Wrong! → ${correctAnswer}`;
         quizFeedback.className = "wrong";
+        showToast("Wrong answer!", "error");
     }
 
     quizResults.push({
