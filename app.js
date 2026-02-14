@@ -49,14 +49,7 @@ let confirmCallback = null;
 
 const toast = document.getElementById("toast");
 
-function showToast(message, type = "info") {
-    toast.textContent = message;
-    toast.className = `toast show ${type}`;
-
-    setTimeout(() => {
-        toast.className = "toast hidden";
-    }, 2000);
-}
+const quizProgress = document.getElementById("quizProgress");
 
 ///////////////////////////////////////////////////////
 
@@ -257,7 +250,9 @@ function populateQuizTags() {
     });
 }
 
-startQuizBtn.onclick = () => {
+
+function startQuiz() {
+
     const selectedCategory = quizCategory.value;
     const selectedTag = quizTag.value;
 
@@ -283,6 +278,7 @@ startQuizBtn.onclick = () => {
     showQuestion();
 };
 
+startQuizBtn.onclick = startQuiz;
 
 function nextQuestion() {
     quizFeedback.textContent = "";
@@ -348,6 +344,8 @@ function showQuestion() {
         `(${currentIndex + 1}/${quizWords.length}) Translate: ${word.french}`;
 
     quizScore.textContent = `Score: ${score}`;
+
+    updateProgress();
 }
 
 function finishQuiz(concludedEarly = false) {
@@ -409,6 +407,7 @@ function reviewWrongAnswers() {
 }
 
 function resetQuiz() {
+
     quizBox.classList.add("hidden");
 
     quizAnswer.style.display = "block";
@@ -455,6 +454,19 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
+function showToast(message, type = "info") {
+    toast.textContent = message;
+    toast.className = `toast show ${type}`;
+
+    setTimeout(() => {
+        toast.className = "toast hidden";
+    }, 2000);
+}
+
+function updateProgress() {
+    const percent = ((currentIndex) / quizWords.length) * 100;
+    quizProgress.style.width = `${percent}%`;
+}
 
 searchInput.oninput = renderWords;
 categoryFilter.onchange = renderWords;

@@ -245,3 +245,18 @@ li.learned {
 .toast.info {
     background: #2563eb;
 }
+
+.progress {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #4f46e5;
+    transition: width 0.3s ease;
+}
