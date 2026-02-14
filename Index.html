@@ -53,6 +53,37 @@
             <p>Learned: <span id="learnedCount">0</span></p>
             <p>Remaining: <span id="remainingCount">0</span></p>
         </div>
+
+        <div class="card">
+            <h2>🧠 Quiz Mode</h2>
+
+            <select id="quizCategory">
+                <option value="">All Categories</option>
+                <option>Verb</option>
+                <option>Noun</option>
+                <option>Adjective</option>
+                <option>Phrase</option>
+            </select>
+
+            <select id="quizTag">
+                <option value="">All Tags</option>
+            </select>
+
+            <button id="startQuizBtn">Start Quiz</button>
+
+            <div id="quizBox" class="quiz-box hidden">
+                <p id="quizQuestion"></p>
+                <input id="quizAnswer" placeholder="Your answer..." />
+
+                <button id="submitAnswerBtn">Submit</button>
+                <button id="concludeQuizBtn">Conclude Quiz</button>
+
+                <p id="quizFeedback"></p>
+                <p id="quizScore"></p>
+            </div>
+
+        </div>
+
     </div>
 
     <script src="app.js"></script>

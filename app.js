@@ -18,6 +18,33 @@ let selectedTag = "";
 let vocabulary = JSON.parse(localStorage.getItem("vocabulary")) || [];
 let editIndex = null;
 
+const quizCategory = document.getElementById("quizCategory");
+const quizTag = document.getElementById("quizTag");
+const startQuizBtn = document.getElementById("startQuizBtn");
+
+const quizBox = document.getElementById("quizBox");
+const quizQuestion = document.getElementById("quizQuestion");
+const quizAnswer = document.getElementById("quizAnswer");
+const submitAnswerBtn = document.getElementById("submitAnswerBtn");
+const quizFeedback = document.getElementById("quizFeedback");
+const quizScore = document.getElementById("quizScore");
+const concludeQuizBtn = document.getElementById("concludeQuizBtn");
+
+
+let quizWords = [];
+let currentQuestion = null;
+let score = 0;
+let totalQuestions = 0;
+
+let currentIndex = 0;
+let quizResults = [];
+
+///////////////////////////////////////////////////////
+
+quizAnswer.style.display = "block";
+submitAnswerBtn.style.display = "block";
+concludeQuizBtn.style.display = "block";
+
 function saveToStorage() {
     localStorage.setItem("vocabulary", JSON.stringify(vocabulary));
 }
@@ -32,7 +59,7 @@ function renderWords() {
         const matchesSearch =
             word.french.toLowerCase().includes(search) ||
             word.english.toLowerCase().includes(search) ||
-            word.tags.join(",").toLowerCase().includes(search);
+            word.tags?.join(",").toLowerCase().includes(search);
 
         const matchesCategory =
             !category || word.category === category;
@@ -75,6 +102,7 @@ function renderWords() {
             saveToStorage();
             renderWords();
             renderTagFilters();
+            populateQuizTags();
             updateStats();
         };
 
@@ -89,6 +117,7 @@ function renderWords() {
             saveToStorage();
             renderWords();
             renderTagFilters();
+            populateQuizTags();
             updateStats();
         };
 
@@ -154,6 +183,9 @@ addBtn.onclick = () => {
     tagsInput.value = "";
 
     saveToStorage();
+    renderTagFilters();
+    populateQuizTags();
+    updateStats();
     renderWords(searchInput.value);
 };
 
@@ -192,8 +224,158 @@ function updateStats() {
     remainingCount.textContent = total - learned;
 }
 
+function populateQuizTags() {
+    quizTag.innerHTML = `<option value="">All Tags</option>`;
+
+    const allTags = [...new Set(vocabulary.flatMap(w => w.tags))];
+
+    allTags.forEach(tag => {
+        const option = document.createElement("option");
+        option.value = tag;
+        option.textContent = tag;
+        quizTag.appendChild(option);
+    });
+}
+
+startQuizBtn.onclick = () => {
+    const selectedCategory = quizCategory.value;
+    const selectedTag = quizTag.value;
+
+    quizWords = vocabulary.filter(word => {
+        const matchCategory = !selectedCategory || word.category === selectedCategory;
+        const matchTag = !selectedTag || word.tags.includes(selectedTag);
+        return matchCategory && matchTag;
+    });
+
+    if (quizWords.length === 0) {
+        alert("No words match selected filters");
+        return;
+    }
+
+    shuffle(quizWords);
+
+    currentIndex = 0;
+    score = 0;
+    quizResults = [];
+
+    quizBox.classList.remove("hidden");
+
+    showQuestion();
+};
+
+
+function nextQuestion() {
+    quizFeedback.textContent = "";
+    quizAnswer.value = "";
+
+    const randomIndex = Math.floor(Math.random() * quizWords.length);
+    currentQuestion = quizWords[randomIndex];
+
+    quizQuestion.textContent = `Translate: ${currentQuestion.french}`;
+    quizScore.textContent = `Score: ${score} / ${totalQuestions}`;
+}
+
+submitAnswerBtn.onclick = () => {
+    const word = quizWords[currentIndex];
+    const userAnswer = quizAnswer.value.trim();
+    const correctAnswer = word.english;
+
+    const isCorrect =
+        userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+
+    if (isCorrect) {
+        score++;
+        quizFeedback.textContent = "✅ Correct!";
+        quizFeedback.className = "correct";
+    } else {
+        quizFeedback.textContent = `❌ Wrong! → ${correctAnswer}`;
+        quizFeedback.className = "wrong";
+    }
+
+    quizResults.push({
+        french: word.french,
+        correctAnswer,
+        userAnswer,
+        isCorrect
+    });
+
+    currentIndex++;
+
+    setTimeout(showQuestion, 800);
+};
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function showQuestion() {
+    quizFeedback.textContent = "";
+    quizAnswer.value = "";
+
+    if (currentIndex >= quizWords.length) {
+        finishQuiz();
+        return;
+    }
+
+    const word = quizWords[currentIndex];
+
+    quizQuestion.textContent =
+        `(${currentIndex + 1}/${quizWords.length}) Translate: ${word.french}`;
+
+    quizScore.textContent = `Score: ${score}`;
+}
+
+function finishQuiz(concludedEarly = false) {
+    const attempted = quizResults.length;
+
+    quizQuestion.textContent =
+        concludedEarly ? "🛑 Quiz Concluded" : "🎉 Quiz Completed!";
+
+    quizAnswer.style.display = "none";
+    submitAnswerBtn.style.display = "none";
+    concludeQuizBtn.style.display = "none";
+
+    quizFeedback.className = "";
+    quizFeedback.innerHTML = `
+    <strong>Results</strong><br/><br/>
+    Total Questions: ${quizWords.length} <br/>
+    Attempted: ${attempted} <br/>
+    Correct: ${score} <br/>
+    Accuracy: ${attempted ? Math.round((score / attempted) * 100) : 0}% 
+    <br/><br/>
+    <button id="restartQuizBtn">Restart Quiz</button>
+  `;
+
+    document
+        .getElementById("restartQuizBtn")
+        .onclick = resetQuiz;
+}
+
+function resetQuiz() {
+    quizBox.classList.add("hidden");
+
+    quizAnswer.style.display = "block";
+    submitAnswerBtn.style.display = "block";
+    concludeQuizBtn.style.display = "block";
+
+    quizAnswer.value = "";
+    quizFeedback.textContent = "";
+    quizScore.textContent = "";
+}
+
+
+concludeQuizBtn.onclick = () => {
+    finishQuiz(true);
+};
+
 searchInput.oninput = renderWords;
 categoryFilter.onchange = renderWords;
 
 // Initial render
 renderWords();
+renderTagFilters();
+populateQuizTags();
+updateStats();

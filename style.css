@@ -123,3 +123,26 @@ li {
 li.learned {
     background: #dcfce7;
 }
+
+.quiz-box {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.hidden {
+    display: none;
+}
+
+.correct {
+    color: green;
+}
+
+.wrong {
+    color: red;
+}
+
+.quiz-box button {
+    margin-top: 6px;
+}
