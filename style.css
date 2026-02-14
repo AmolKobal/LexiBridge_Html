@@ -291,3 +291,7 @@ body.dark .progress {
 body.dark .quiz-box {
     background: #1f2933;
 }
+
+body.dark .modal .modal-content {
+    background: #374151;
+}

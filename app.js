@@ -53,6 +53,10 @@ const quizProgress = document.getElementById("quizProgress");
 
 const darkModeToggle = document.getElementById("darkModeToggle");
 
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
+const completeSound = document.getElementById("complete");
+
 ///////////////////////////////////////////////////////
 
 quizAnswer.style.display = "block";
@@ -305,10 +309,12 @@ submitAnswerBtn.onclick = () => {
         quizFeedback.textContent = "✅ Correct!";
         quizFeedback.className = "correct";
         showToast("Correct answer!", "success");
+        playSound(true);
     } else {
         quizFeedback.textContent = `❌ Wrong! → ${correctAnswer}`;
         quizFeedback.className = "wrong";
         showToast("Wrong answer!", "error");
+        playSound(false);
     }
 
     quizResults.push({
@@ -350,6 +356,9 @@ function showQuestion() {
 }
 
 function finishQuiz(concludedEarly = false) {
+
+    playCompleteSound();
+
     const attempted = quizResults.length;
     const wrongAnswers = quizResults.filter(r => !r.isCorrect);
 
@@ -362,20 +371,19 @@ function finishQuiz(concludedEarly = false) {
 
     quizFeedback.className = "";
     quizFeedback.innerHTML = `
-    <strong>Results</strong><br/><br/>
-    Total Questions: ${quizWords.length} <br/>
-    Attempted: ${attempted} <br/>
-    Correct: ${score} <br/>
-    Accuracy: ${attempted ? Math.round((score / attempted) * 100) : 0}% 
-    <br/><br/>
+        <strong>Results</strong><br/><br/>
+        Total Questions: ${quizWords.length} <br/>
+        Attempted: ${attempted} <br/>
+        Correct: ${score} <br/>
+        Accuracy: ${attempted ? Math.round((score / attempted) * 100) : 0}% 
+        <br/><br/>
 
-    ${wrongAnswers.length ?
+        ${wrongAnswers.length ?
             `<button id="reviewWrongBtn">Review Wrong Answers</button>` :
             `<em>Perfect Score! 🎉</em>`}
-      
-    <br/><br/>
-    <button id="restartQuizBtn">Restart Quiz</button>
-  `;
+        
+        <br/><br/>
+        <button id="restartQuizBtn">Restart Quiz</button>`;
 
     document
         .getElementById("restartQuizBtn")
@@ -479,6 +487,21 @@ darkModeToggle.onclick = () => {
 // Restore preference
 if (localStorage.getItem("darkMode") === "true") {
     document.body.classList.add("dark");
+}
+
+function playSound(isCorrect) {
+    if (isCorrect) {
+        correctSound.currentTime = 0;
+        correctSound.play();
+    } else {
+        wrongSound.currentTime = 0;
+        wrongSound.play();
+    }
+}
+
+function playCompleteSound() {
+    completeSound.currentTime = 0;
+    completeSound.play();
 }
 
 ////////////////////////////////////////////////////
