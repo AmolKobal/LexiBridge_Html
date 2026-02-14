@@ -33,7 +33,25 @@
         <div class="card">
             <h2>Vocabulary</h2>
             <input id="searchInput" placeholder="Search words..." />
+
+            <select id="categoryFilter">
+                <option value="">All Categories</option>
+                <option>Verb</option>
+                <option>Noun</option>
+                <option>Adjective</option>
+                <option>Phrase</option>
+            </select>
+
+            <div id="tagFilters" class="tag-filters"></div>
+
             <ul id="wordList"></ul>
+        </div>
+
+        <div class="card">
+            <h2>📊 Progress</h2>
+            <p>Total Words: <span id="totalCount">0</span></p>
+            <p>Learned: <span id="learnedCount">0</span></p>
+            <p>Remaining: <span id="remainingCount">0</span></p>
         </div>
     </div>
 
