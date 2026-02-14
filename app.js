@@ -57,11 +57,30 @@ const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 const completeSound = document.getElementById("complete");
 
-///////////////////////////////////////////////////////
+const quizStreak = document.getElementById("quizStreak");
+
+let streak = Number(localStorage.getItem("streak")) || 0;
+
+const vocabSection = document.getElementById("vocabSection");
+const addWordSection = document.getElementById("addWordSection");
+const quizSection = document.getElementById("quizSection");
+
+const showVocabBtn = document.getElementById("showVocabBtn");
+const showAddBtn = document.getElementById("showAddBtn");
+const showQuizBtn = document.getElementById("showQuizBtn");
+
+const navButtons = [
+    showVocabBtn,
+    showAddBtn,
+    showQuizBtn
+];
+
 
 quizAnswer.style.display = "block";
 submitAnswerBtn.style.display = "block";
 concludeQuizBtn.style.display = "block";
+
+///////////////////////////////////////////////////////
 
 function saveToStorage() {
     localStorage.setItem("vocabulary", JSON.stringify(vocabulary));
@@ -305,17 +324,22 @@ submitAnswerBtn.onclick = () => {
         userAnswer.toLowerCase() === correctAnswer.toLowerCase();
 
     if (isCorrect) {
+        streak++;
         score++;
         quizFeedback.textContent = "✅ Correct!";
         quizFeedback.className = "correct";
         showToast("Correct answer!", "success");
         playSound(true);
     } else {
+        streak = 0;
         quizFeedback.textContent = `❌ Wrong! → ${correctAnswer}`;
         quizFeedback.className = "wrong";
         showToast("Wrong answer!", "error");
         playSound(false);
     }
+
+    saveStreak();
+    updateStreakUI();
 
     quizResults.push({
         french: word.french,
@@ -426,6 +450,11 @@ function resetQuiz() {
     quizAnswer.value = "";
     quizFeedback.textContent = "";
     quizScore.textContent = "";
+
+    streak = 0;
+    saveStreak();
+    updateStreakUI();
+
 }
 
 concludeQuizBtn.onclick = () => {
@@ -477,17 +506,31 @@ function updateProgress() {
     quizProgress.style.width = `${percent}%`;
 }
 
-darkModeToggle.onclick = () => {
-    document.body.classList.toggle("dark");
+// darkModeToggle.onclick = () => {
+//     document.body.classList.toggle("dark");
 
-    const isDark = document.body.classList.contains("dark");
-    localStorage.setItem("darkMode", isDark);
+//     const isDark = document.body.classList.contains("dark");
+//     localStorage.setItem("darkMode", isDark);
+// };
+
+// // Restore preference
+// if (localStorage.getItem("darkMode") === "true") {
+//     document.body.classList.add("dark");
+// }
+
+const darkToggle = document.getElementById("darkModeToggle");
+
+darkToggle.checked = localStorage.getItem("darkMode") === "true";
+
+darkToggle.onchange = () => {
+    document.body.classList.toggle("dark", darkToggle.checked);
+    localStorage.setItem("darkMode", darkToggle.checked);
 };
 
-// Restore preference
-if (localStorage.getItem("darkMode") === "true") {
+if (darkToggle.checked) {
     document.body.classList.add("dark");
 }
+
 
 function playSound(isCorrect) {
     if (isCorrect) {
@@ -503,6 +546,39 @@ function playCompleteSound() {
     completeSound.currentTime = 0;
     completeSound.play();
 }
+
+function saveStreak() {
+    localStorage.setItem("streak", streak);
+}
+
+function updateStreakUI() {
+    quizStreak.textContent = `🔥 Streak: ${streak}`;
+}
+
+function showSection(section, button) {
+    [vocabSection, addWordSection, quizSection]
+        .forEach(sec => sec.classList.add("hidden"));
+
+    setTimeout(() => {
+        section.classList.remove("hidden");
+    }, 50); // tiny delay = smoother animation
+
+    setActiveButton(button);
+}
+
+
+showVocabBtn.onclick = () => showSection(vocabSection, showVocabBtn);
+
+showAddBtn.onclick = () => showSection(addWordSection, showAddBtn);
+
+showQuizBtn.onclick = () => showSection(quizSection, showQuizBtn);
+
+function setActiveButton(activeBtn) {
+    navButtons.forEach(btn => btn.classList.remove("active"));
+    activeBtn.classList.add("active");
+}
+
+setActiveButton(showVocabBtn);
 
 ////////////////////////////////////////////////////
 

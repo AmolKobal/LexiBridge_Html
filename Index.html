@@ -10,11 +10,25 @@
 
 <body>
     <div class="container">
-        <h1>📘 LexiBridge</h1>
 
-        <button id="darkModeToggle">🌙 Dark Mode</button>
+        <!-- <button id="darkModeToggle">🌙 Dark Mode</button> -->
+        <header class="top-bar">
+            <h1>📘 LexiBridge</h1>
 
-        <div class="card">
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
+        </header>
+
+        <div class="nav-buttons">
+            <button id="showVocabBtn">📚 Vocabulary</button>
+            <button id="showAddBtn">➕ Add Word</button>
+            <button id="showQuizBtn">🧠 Quiz</button>
+        </div>
+
+
+        <div class="card hidden" id="addWordSection">
             <h2>Add / Edit Word</h2>
             <input id="frenchWord" placeholder="French word" />
             <input id="englishWord" placeholder="English meaning" />
@@ -32,7 +46,7 @@
             <button id="addBtn">Save Word</button>
         </div>
 
-        <div class="card">
+        <div class="card" id="vocabSection">
             <h2>Vocabulary</h2>
             <input id="searchInput" placeholder="Search words..." />
 
@@ -56,7 +70,7 @@
             <p>Remaining: <span id="remainingCount">0</span></p>
         </div>
 
-        <div class="card">
+        <div class="card hidden" id="quizSection">
             <h2>🧠 Quiz Mode</h2>
 
             <select id="quizCategory">
@@ -86,6 +100,7 @@
 
                 <p id="quizFeedback"></p>
                 <p id="quizScore"></p>
+                <p id="quizStreak">🔥 Streak: 0</p>
             </div>
 
         </div>
