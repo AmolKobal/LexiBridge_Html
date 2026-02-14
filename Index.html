@@ -13,10 +13,21 @@
         <h1>📘 LexiBridge</h1>
 
         <div class="card">
-            <h2>Add New Word</h2>
+            <h2>Add / Edit Word</h2>
             <input id="frenchWord" placeholder="French word" />
             <input id="englishWord" placeholder="English meaning" />
-            <button id="addBtn">Add Word</button>
+
+            <select id="categorySelect">
+                <option value="">Select Category</option>
+                <option>Verb</option>
+                <option>Noun</option>
+                <option>Adjective</option>
+                <option>Phrase</option>
+            </select>
+
+            <input id="tagsInput" placeholder="Tags (comma separated)" />
+
+            <button id="addBtn">Save Word</button>
         </div>
 
         <div class="card">
