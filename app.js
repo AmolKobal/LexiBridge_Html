@@ -39,6 +39,15 @@ let totalQuestions = 0;
 let currentIndex = 0;
 let quizResults = [];
 
+
+const confirmModal = document.getElementById("confirmModal");
+const confirmMessage = document.getElementById("confirmMessage");
+const confirmYes = document.getElementById("confirmYes");
+const confirmNo = document.getElementById("confirmNo");
+
+let confirmCallback = null;
+
+
 ///////////////////////////////////////////////////////
 
 quizAnswer.style.display = "block";
@@ -330,6 +339,7 @@ function showQuestion() {
 
 function finishQuiz(concludedEarly = false) {
     const attempted = quizResults.length;
+    const wrongAnswers = quizResults.filter(r => !r.isCorrect);
 
     quizQuestion.textContent =
         concludedEarly ? "🛑 Quiz Concluded" : "🎉 Quiz Completed!";
@@ -346,12 +356,43 @@ function finishQuiz(concludedEarly = false) {
     Correct: ${score} <br/>
     Accuracy: ${attempted ? Math.round((score / attempted) * 100) : 0}% 
     <br/><br/>
+
+    ${wrongAnswers.length ?
+            `<button id="reviewWrongBtn">Review Wrong Answers</button>` :
+            `<em>Perfect Score! 🎉</em>`}
+      
+    <br/><br/>
     <button id="restartQuizBtn">Restart Quiz</button>
   `;
 
     document
         .getElementById("restartQuizBtn")
         .onclick = resetQuiz;
+
+    if (wrongAnswers.length) {
+        document
+            .getElementById("reviewWrongBtn")
+            .onclick = reviewWrongAnswers;
+    }
+}
+
+function reviewWrongAnswers() {
+    const wrongAnswers = quizResults.filter(r => !r.isCorrect);
+
+    quizQuestion.textContent = "📉 Wrong Answers Review";
+    quizFeedback.className = "";
+
+    quizFeedback.innerHTML = wrongAnswers
+        .map(r => `
+            <div class="review-item">
+                <strong>${r.french}</strong><br/>
+                Your Answer: <span class="wrong">${r.userAnswer || "(blank)"}</span><br/>
+                Correct Answer: <span class="correct">${r.correctAnswer}</span>
+            </div>
+            <hr/>`)
+        .join("");
+
+    quizScore.textContent = "";
 }
 
 function resetQuiz() {
@@ -366,10 +407,41 @@ function resetQuiz() {
     quizScore.textContent = "";
 }
 
-
 concludeQuizBtn.onclick = () => {
-    finishQuiz(true);
+    showConfirm(
+        "Are you sure you want to conclude the quiz?",
+        () => finishQuiz(true)
+    );
 };
+
+function showConfirm(message, onYes) {
+    confirmMessage.textContent = message;
+    confirmModal.classList.remove("hidden");
+
+    confirmCallback = onYes;
+}
+
+confirmNo.onclick = () => {
+    confirmModal.classList.add("hidden");
+    confirmCallback = null;
+};
+
+confirmYes.onclick = () => {
+    confirmModal.classList.add("hidden");
+
+    if (confirmCallback) {
+        confirmCallback();
+    }
+
+    confirmCallback = null;
+};
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        confirmModal.classList.add("hidden");
+    }
+});
+
 
 searchInput.oninput = renderWords;
 categoryFilter.onchange = renderWords;
