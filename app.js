@@ -2,7 +2,6 @@ const frenchInput = document.getElementById("frenchWord");
 const englishInput = document.getElementById("englishWord");
 const categorySelect = document.getElementById("categorySelect");
 const tagsInput = document.getElementById("tagsInput");
-const addBtn = document.getElementById("addBtn");
 const wordList = document.getElementById("wordList");
 const searchInput = document.getElementById("searchInput");
 
@@ -62,7 +61,6 @@ const quizStreak = document.getElementById("quizStreak");
 let streak = Number(localStorage.getItem("streak")) || 0;
 
 const vocabSection = document.getElementById("vocabSection");
-const addWordSection = document.getElementById("addWordSection");
 const quizSection = document.getElementById("quizSection");
 
 const showVocabBtn = document.getElementById("showVocabBtn");
@@ -71,14 +69,28 @@ const showQuizBtn = document.getElementById("showQuizBtn");
 
 const navButtons = [
     showVocabBtn,
-    showAddBtn,
     showQuizBtn
 ];
-
 
 quizAnswer.style.display = "block";
 submitAnswerBtn.style.display = "block";
 concludeQuizBtn.style.display = "block";
+
+const navIndicator = document.getElementById("navIndicator");
+
+
+const wordModal = document.getElementById("wordModal");
+const modalTitle = document.getElementById("modalTitle");
+const modalFrench = document.getElementById("modalFrench");
+const modalEnglish = document.getElementById("modalEnglish");
+const modalCategory = document.getElementById("modalCategory");
+const modalTags = document.getElementById("modalTags");
+
+const openAddModal = document.getElementById("openAddModal");
+const closeModalBtn = document.getElementById("closeModalBtn");
+const saveWordBtn = document.getElementById("saveWordBtn");
+
+let editingWordId = null;
 
 ///////////////////////////////////////////////////////
 
@@ -113,7 +125,7 @@ function renderWords() {
         const span = document.createElement("span");
         span.innerHTML = `
             <strong>${word.french}</strong> → ${word.english}
-            <em>(${word.category || "Uncategorized"})</em>
+            <em class="category">(${word.category || "Uncategorized"})</em>
             `;
         if (word.learned) {
             span.classList.add("learned");
@@ -166,66 +178,6 @@ function renderWords() {
 
     updateStats();
 }
-
-function loadForEdit(index) {
-    const word = vocabulary[index];
-
-    frenchInput.value = word.french;
-    englishInput.value = word.english;
-    categorySelect.value = word.category;
-    tagsInput.value = word.tags.join(", ");
-
-    editIndex = index;
-}
-
-addBtn.onclick = () => {
-    const french = frenchInput.value.trim();
-    const english = englishInput.value.trim();
-    const category = categorySelect.value;
-    const tags = tagsInput.value
-        .split(",")
-        .map(t => t.trim())
-        .filter(Boolean);
-
-    if (!french || !english) {
-        alert("Enter both French and English words");
-        return;
-    }
-
-    const wordData = {
-        french,
-        english,
-        learned: false,
-        category,
-        tags
-    };
-
-    if (editIndex !== null) {
-        vocabulary[editIndex] = {
-            ...vocabulary[editIndex],
-            french,
-            english,
-            category,
-            tags
-        };
-        editIndex = null;
-    } else {
-        vocabulary.push(wordData);
-    }
-
-    frenchInput.value = "";
-    englishInput.value = "";
-    categorySelect.value = "";
-    tagsInput.value = "";
-
-    saveToStorage();
-    renderTagFilters();
-    populateQuizTags();
-    updateStats();
-    renderWords(searchInput.value);
-
-    showToast("Word saved!", "success");
-};
 
 searchInput.oninput = (e) => {
     renderWords(e.target.value);
@@ -506,18 +458,6 @@ function updateProgress() {
     quizProgress.style.width = `${percent}%`;
 }
 
-// darkModeToggle.onclick = () => {
-//     document.body.classList.toggle("dark");
-
-//     const isDark = document.body.classList.contains("dark");
-//     localStorage.setItem("darkMode", isDark);
-// };
-
-// // Restore preference
-// if (localStorage.getItem("darkMode") === "true") {
-//     document.body.classList.add("dark");
-// }
-
 const darkToggle = document.getElementById("darkModeToggle");
 
 darkToggle.checked = localStorage.getItem("darkMode") === "true";
@@ -530,7 +470,6 @@ darkToggle.onchange = () => {
 if (darkToggle.checked) {
     document.body.classList.add("dark");
 }
-
 
 function playSound(isCorrect) {
     if (isCorrect) {
@@ -556,7 +495,7 @@ function updateStreakUI() {
 }
 
 function showSection(section, button) {
-    [vocabSection, addWordSection, quizSection]
+    [vocabSection, quizSection]
         .forEach(sec => sec.classList.add("hidden"));
 
     setTimeout(() => {
@@ -566,12 +505,8 @@ function showSection(section, button) {
     setActiveButton(button);
 }
 
-
-showVocabBtn.onclick = () => showSection(vocabSection, showVocabBtn);
-
-showAddBtn.onclick = () => showSection(addWordSection, showAddBtn);
-
-showQuizBtn.onclick = () => showSection(quizSection, showQuizBtn);
+showVocabBtn.onclick = () => location.hash = "#vocab";
+showQuizBtn.onclick = () => location.hash = "#quiz";
 
 function setActiveButton(activeBtn) {
     navButtons.forEach(btn => btn.classList.remove("active"));
@@ -579,6 +514,156 @@ function setActiveButton(activeBtn) {
 }
 
 setActiveButton(showVocabBtn);
+
+function moveIndicator(index) {
+    navIndicator.style.transform = `translateX(${index * 100}%)`;
+}
+
+function setActiveButton(activeBtn) {
+    navButtons.forEach(btn => btn.classList.remove("active"));
+    activeBtn.classList.add("active");
+
+    const index = navButtons.indexOf(activeBtn);
+    moveIndicator(index);
+}
+
+function router() {
+    const hash = window.location.hash || "#vocab";
+
+    if (hash === "#quiz") showSection(quizSection, showQuizBtn);
+    else showSection(vocabSection, showVocabBtn);
+}
+
+window.addEventListener("hashchange", router);
+window.addEventListener("load", router);
+
+// Swipe
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener("touchstart", e => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener("touchend", e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+});
+
+function handleSwipe() {
+    const diff = touchEndX - touchStartX;
+
+    if (Math.abs(diff) < 50) return;
+
+    const currentIndex = navButtons.findIndex(btn =>
+        btn.classList.contains("active")
+    );
+
+    if (diff < 0 && currentIndex < navButtons.length - 1) {
+        navButtons[currentIndex + 1].click();
+    }
+
+    if (diff > 0 && currentIndex > 0) {
+        navButtons[currentIndex - 1].click();
+    }
+}
+
+document.querySelectorAll("button").forEach(button => {
+    button.addEventListener("click", function (e) {
+        const ripple = document.createElement("span");
+        ripple.className = "ripple";
+
+        ripple.style.left = `${e.offsetX}px`;
+        ripple.style.top = `${e.offsetY}px`;
+
+        this.appendChild(ripple);
+
+        setTimeout(() => ripple.remove(), 500);
+    });
+});
+
+openAddModal.onclick = () => {
+    editingWordId = null;
+    modalTitle.textContent = "Add Word";
+
+    modalFrench.value = "";
+    modalEnglish.value = "";
+    modalCategory.value = "";
+    modalTags.value = "";
+
+    wordModal.classList.remove("hidden");
+};
+
+closeModalBtn.onclick = () => {
+    wordModal.classList.add("hidden");
+};
+
+saveWordBtn.onclick = () => {
+
+    const french = modalFrench.value.trim();
+    const english = modalEnglish.value.trim();
+    const category = modalCategory.value;
+    const tags = modalTags.value.split(",").map(t => t.trim()).filter(Boolean);
+
+    if (!french || !english) {
+        alert("Enter both French and English words");
+        return;
+    }
+
+    const wordData = {
+        french,
+        english,
+        learned: false,
+        category,
+        tags
+    };
+
+    if (editIndex !== null) {
+        vocabulary[editIndex] = {
+            ...vocabulary[editIndex],
+            french,
+            english,
+            category,
+            tags
+        };
+        editIndex = null;
+        showToast("Word Updated", "success");
+    } else {
+        vocabulary.push(wordData);
+        showToast("Word Added", "success");
+    }
+
+    modalFrench.value = "";
+    modalEnglish.value = "";
+    modalCategory.value = "";
+    modalTags.value = "";
+
+    saveToStorage();
+    renderTagFilters();
+    populateQuizTags();
+    updateStats();
+    renderWords(editIndex);
+
+    wordModal.classList.add("hidden");
+
+};
+
+function loadForEdit(index) {
+
+    modalTitle.textContent = "Edit Word";
+
+    const word = vocabulary[index];
+    editingWordId = word.id;
+
+    modalFrench.value = word.french;
+    modalEnglish.value = word.english;
+    modalCategory.value = word.category || "";
+    modalTags.value = (word.tags || []).join(", ");
+
+    wordModal.classList.remove("hidden");
+
+    editIndex = index;
+}
 
 ////////////////////////////////////////////////////
 

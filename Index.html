@@ -23,31 +23,14 @@
 
         <div class="nav-buttons">
             <button id="showVocabBtn">📚 Vocabulary</button>
-            <button id="showAddBtn">➕ Add Word</button>
             <button id="showQuizBtn">🧠 Quiz</button>
-        </div>
-
-
-        <div class="card hidden" id="addWordSection">
-            <h2>Add / Edit Word</h2>
-            <input id="frenchWord" placeholder="French word" />
-            <input id="englishWord" placeholder="English meaning" />
-
-            <select id="categorySelect">
-                <option value="">Select Category</option>
-                <option>Verb</option>
-                <option>Noun</option>
-                <option>Adjective</option>
-                <option>Phrase</option>
-            </select>
-
-            <input id="tagsInput" placeholder="Tags (comma separated)" />
-
-            <button id="addBtn">Save Word</button>
+            <div class="nav-indicator" id="navIndicator"></div>
         </div>
 
         <div class="card" id="vocabSection">
             <h2>Vocabulary</h2>
+            <button id="openAddModal">➕ Add Word</button>
+
             <input id="searchInput" placeholder="Search words..." />
 
             <select id="categoryFilter">
@@ -61,6 +44,31 @@
             <div id="tagFilters" class="tag-filters"></div>
 
             <ul id="wordList"></ul>
+        </div>
+
+        <div id="wordModal" class="modal hidden">
+            <div class="modal-content">
+
+                <h3 id="modalTitle">Add Word</h3>
+
+                <input id="modalFrench" placeholder="French word">
+                <input id="modalEnglish" placeholder="English meaning">
+
+                <select id="modalCategory">
+                    <option value="">Select Category</option>
+                    <option value="Verb">Verb</option>
+                    <option value="Noun">Noun</option>
+                    <option value="Adjective">Adjective</option>
+                </select>
+
+                <input id="modalTags" placeholder="Tags (comma separated)">
+
+                <div class="modal-actions">
+                    <button id="saveWordBtn">Save</button>
+                    <button id="closeModalBtn">Cancel</button>
+                </div>
+
+            </div>
         </div>
 
         <div class="card">
