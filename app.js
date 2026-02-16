@@ -164,13 +164,20 @@ function renderWords() {
 
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
+        deleteBtn.style.background = "#e74c3c";
+        deleteBtn.style.color = "white";
         deleteBtn.onclick = () => {
-            vocabulary.splice(index, 1);
-            saveToStorage();
-            renderWords();
-            renderTagFilters();
-            populateQuizTags();
-            updateStats();
+            showConfirm(
+                `Are you sure you want to delete word '${word.french}'?`,
+                () => {
+                    vocabulary.splice(index, 1);
+                    saveToStorage();
+                    renderWords();
+                    renderTagFilters();
+                    populateQuizTags();
+                    updateStats();
+                }
+            );
         };
 
         actions.append(learnBtn, editBtn, deleteBtn);
