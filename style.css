@@ -326,6 +326,7 @@ body.dark #quizStreak {
     flex: 1;
 }
 
+/* Dark Mode Switch */
 .switch {
     position: relative;
     display: inline-block;
@@ -367,6 +368,8 @@ input:checked+.slider {
 input:checked+.slider:before {
     transform: translateX(24px);
 }
+
+
 
 .nav-buttons button {
     flex: 1;
@@ -519,4 +522,15 @@ button {
 body.dark .modal-content {
     background: #1f2933;
     color: white;
+}
+
+.floatLeft {
+    padding-top: 5px;
+    float: left;
+}
+
+.tag-sort-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
 }

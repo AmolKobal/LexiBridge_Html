@@ -28,8 +28,14 @@
         </div>
 
         <div class="card" id="vocabSection">
-            <h2>Vocabulary</h2>
-            <button id="openAddModal">➕ Add Word</button>
+            <div>
+                <div style="float: left;">
+                    <h2>Vocabulary</h2>&nbsp;&nbsp;
+                </div>
+                <div style="float: right;">
+                    <button id="openAddModal" style="margin-top: 15px;">➕ Add Word</button>
+                </div>
+            </div>
 
             <input id="searchInput" placeholder="Search words..." />
 
@@ -41,9 +47,26 @@
                 <option>Phrase</option>
             </select>
 
-            <div id="tagFilters" class="tag-filters"></div>
+            <div class="tag-sort-container">
+                <div>
+                    <div id="tagFilters" class="tag-filters"></div>
+                </div>
+                <div style="width: 100px; margin-top: 10px;">
+                    <div class="floatLeft">
+                        <label for="sortToggle">Sort</label>&nbsp;&nbsp;
+                    </div>
+                    <div>
+                        <label class="switch">
+                            <input type="checkbox" checked="true" id="sortToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
 
-            <ul id="wordList"></ul>
+            <div>
+                <ul id="wordList"></ul>
+            </div>
         </div>
 
         <div id="wordModal" class="modal hidden">

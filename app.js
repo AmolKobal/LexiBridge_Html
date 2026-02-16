@@ -99,22 +99,25 @@ function saveToStorage() {
 }
 
 function renderWords() {
+
     const search = searchInput.value.toLowerCase();
     const category = categoryFilter.value;
 
     wordList.innerHTML = "";
 
-    const filtered = vocabulary.filter(word => {
+    const sortedWords = [...vocabulary].sort((a, b) =>
+        a.french.localeCompare(b.french, undefined, { sensitivity: "base" }) * (sortToggle.checked ? 1 : -1)
+    );
+
+    const filtered = sortedWords.filter(word => {
         const matchesSearch =
             word.french.toLowerCase().includes(search) ||
             word.english.toLowerCase().includes(search) ||
             word.tags?.join(",").toLowerCase().includes(search);
 
-        const matchesCategory =
-            !category || word.category === category;
+        const matchesCategory = !category || word.category === category;
 
-        const matchesTag =
-            !selectedTag || word.tags.includes(selectedTag);
+        const matchesTag = !selectedTag || word.tags?.includes(selectedTag);
 
         return matchesSearch && matchesCategory && matchesTag;
     });
@@ -177,6 +180,7 @@ function renderWords() {
     });
 
     updateStats();
+
 }
 
 searchInput.oninput = (e) => {
@@ -189,6 +193,7 @@ function renderTagFilters() {
     const allTags = [...new Set(vocabulary.flatMap(w => w.tags))];
 
     allTags.forEach(tag => {
+        if (!tag) return;
         const chip = document.createElement("span");
         chip.textContent = tag;
         chip.classList.add("filter-chip");
@@ -459,12 +464,18 @@ function updateProgress() {
 }
 
 const darkToggle = document.getElementById("darkModeToggle");
+const sortToggle = document.getElementById("sortToggle");
 
 darkToggle.checked = localStorage.getItem("darkMode") === "true";
 
 darkToggle.onchange = () => {
     document.body.classList.toggle("dark", darkToggle.checked);
     localStorage.setItem("darkMode", darkToggle.checked);
+};
+
+sortToggle.onchange = () => {
+    document.body.classList.toggle("sort", sortToggle.checked);
+    renderWords();
 };
 
 if (darkToggle.checked) {
