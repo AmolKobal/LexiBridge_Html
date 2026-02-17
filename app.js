@@ -482,6 +482,7 @@ darkToggle.onchange = () => {
 
 sortToggle.onchange = () => {
     document.body.classList.toggle("sort", sortToggle.checked);
+    sortToggleLabel.textContent = sortToggle.checked ? "Sort A→Z" : "Sort Z→A";
     renderWords();
 };
 

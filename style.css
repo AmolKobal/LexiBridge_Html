@@ -535,3 +535,7 @@ body.dark .modal-content {
     justify-content: space-between;
     margin-top: 10px;
 }
+
+#sortToggleLabel {
+    font-size: 12px;
+}
