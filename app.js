@@ -684,6 +684,70 @@ function loadForEdit(index) {
     editIndex = index;
 }
 
+function triggerExport() {
+    const dataStr = JSON.stringify(vocabulary, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "vocabulary.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function triggerImport() {
+    document.getElementById("importFile").click();
+}
+
+document.getElementById("importFile").addEventListener("change", handleImport);
+
+function handleImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+        try {
+            const importedWords = JSON.parse(e.target.result);
+
+            if (!Array.isArray(importedWords)) {
+                alert("Invalid vocabulary format.");
+                return;
+            }
+
+            mergeVocabulary(importedWords);
+        } catch (err) {
+            alert("Failed to read file. Invalid JSON.");
+        }
+    };
+
+    reader.readAsText(file);
+}
+
+function mergeVocabulary(importedWords) {
+    const existing = getVocabularyFromStorage();
+
+    const merged = [...existing];
+
+    importedWords.forEach(word => {
+        const exists = existing.some(w => w.word === word.word);
+        if (!exists) merged.push(word);
+    });
+
+    saveVocabularyToStorage(merged);
+    alert("Vocabulary imported successfully!");
+}
+
+// const replace = confirm("Replace existing vocabulary?");
+// if (replace) {
+//     saveVocabularyToStorage(importedWords);
+// } else {
+//     mergeVocabulary(importedWords);
+// }
+
 ////////////////////////////////////////////////////
 
 searchInput.oninput = renderWords;

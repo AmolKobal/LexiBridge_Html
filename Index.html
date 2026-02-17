@@ -33,8 +33,14 @@
                     <h2>Vocabulary</h2>&nbsp;&nbsp;
                 </div>
                 <div style="float: right;">
-                    <button id="openAddModal" style="margin-top: 15px;">➕ Add Word</button>
+                    <button id="openAddModal" style="margin-top: 15px;height: 40px;font-size: 14px;">➕ Add Word</button>
                 </div>
+            </div>
+
+            <div class="import-export-container">
+                <input type="file" id="importFile" accept=".json" hidden />
+                <button class="smallBtn" style="margin-right: 5px;" onclick="triggerImport()">Import</button>
+                <button class="smallBtn" onclick="triggerExport()">Export</button>
             </div>
 
             <input id="searchInput" placeholder="Search words..." />
