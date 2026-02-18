@@ -28,49 +28,54 @@
         </div>
 
         <div class="card" id="vocabSection">
-            <div>
+            <div class="vocab-header">
                 <div style="float: left;">
                     <h2>Vocabulary</h2>&nbsp;&nbsp;
                 </div>
                 <div style="float: right;">
                     <button id="openAddModal" style="margin-top: 15px;height: 40px;font-size: 14px;">➕ Add Word</button>
                 </div>
-            </div>
 
-            <div class="import-export-container">
-                <input type="file" id="importFile" accept=".json" hidden />
-                <button class="smallBtn" style="margin-right: 5px;" onclick="triggerImport()">Import</button>
-                <button class="smallBtn" onclick="triggerExport()">Export</button>
-            </div>
-
-            <input id="searchInput" placeholder="Search words..." />
-
-            <select id="categoryFilter">
-                <option value="">All Categories</option>
-                <option>Verb</option>
-                <option>Noun</option>
-                <option>Adjective</option>
-                <option>Phrase</option>
-            </select>
-
-            <div class="tag-sort-container">
-                <div>
-                    <div id="tagFilters" class="tag-filters"></div>
+                <div class="import-export-container">
+                    <input type="file" id="importFile" accept=".json" hidden />
+                    <button class="smallBtn" style="margin-right: 5px;" onclick="triggerImport()">Import</button>
+                    <button class="smallBtn" onclick="triggerExport()">Export</button>
                 </div>
-                <div style="width: 130px; margin-top: 10px;">
-                    <div class="floatLeft">
-                        <label id="sortToggleLabel" for="sortToggle">Sort A→Z</label>&nbsp;&nbsp;
-                    </div>
+
+                <input id="searchInput" placeholder="Search words..." />
+
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                    <option>Verb</option>
+                    <option>Noun</option>
+                    <option>Adjective</option>
+                    <option>Phrase</option>
+                </select>
+
+                <div class="tag-sort-container">
                     <div>
-                        <label class="switch">
-                            <input type="checkbox" checked="true" id="sortToggle">
-                            <span class="slider"></span>
-                        </label>
+                        <div id="tagFilters" class="tag-filters"></div>
                     </div>
+                    <div style="width: 130px; margin-top: 10px;">
+                        <div class="floatLeft">
+                            <label id="sortToggleLabel" for="sortToggle">Sort A→Z</label>&nbsp;&nbsp;
+                        </div>
+                        <div>
+                            <label class="switch">
+                                <input type="checkbox" checked="true" id="sortToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div id="alphabetList"></div>
                 </div>
             </div>
 
             <div>
+                <label id="wordListLabel"></label>
                 <ul id="wordList"></ul>
             </div>
         </div>

@@ -98,7 +98,7 @@ function saveToStorage() {
     localStorage.setItem("vocabulary", JSON.stringify(vocabulary));
 }
 
-function renderWords() {
+function renderWords(sortByAlphabet = false, alphabet = "") {
 
     const search = searchInput.value.toLowerCase();
     const category = categoryFilter.value;
@@ -109,18 +109,25 @@ function renderWords() {
         a.french.localeCompare(b.french, undefined, { sensitivity: "base" }) * (sortToggle.checked ? 1 : -1)
     );
 
-    const filtered = sortedWords.filter(word => {
-        const matchesSearch =
-            word.french.toLowerCase().includes(search) ||
-            word.english.toLowerCase().includes(search) ||
-            word.tags?.join(",").toLowerCase().includes(search);
+    let filtered = [];
 
-        const matchesCategory = !category || word.category === category;
+    if (sortByAlphabet) {
+        filtered = sortedWords.filter(word => word.french.charAt(0).toLowerCase() === alphabet.toLowerCase());
+    }
+    else {
+        filtered = sortedWords.filter(word => {
+            const matchesSearch =
+                word.french.toLowerCase().includes(search) ||
+                word.english.toLowerCase().includes(search) ||
+                word.tags?.join(",").toLowerCase().includes(search);
 
-        const matchesTag = !selectedTag || word.tags?.includes(selectedTag);
+            const matchesCategory = !category || word.category === category;
 
-        return matchesSearch && matchesCategory && matchesTag;
-    });
+            const matchesTag = !selectedTag || word.tags?.includes(selectedTag);
+
+            return matchesSearch && matchesCategory && matchesTag;
+        });
+    }
 
     filtered.forEach((word, index) => {
         const li = document.createElement("li");
@@ -184,7 +191,10 @@ function renderWords() {
         li.append(span, actions);
 
         wordList.appendChild(li);
+
     });
+
+    document.getElementById("wordListLabel").innerHTML = `Total ${filtered.length} word(s)`;
 
     updateStats();
 
@@ -741,13 +751,43 @@ function mergeVocabulary(importedWords) {
     alert("Vocabulary imported successfully!");
 }
 
-// const replace = confirm("Replace existing vocabulary?");
-// if (replace) {
-//     saveVocabularyToStorage(importedWords);
-// } else {
-//     mergeVocabulary(importedWords);
-// }
+function renderAlphabetList() {
 
+    const alphabetList = document.getElementById("alphabetList");
+
+    const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+    alphabets.forEach(alphabet => {
+        const alphaLink = document.createElement("a");
+        alphaLink.onclick = () => filterByAlphabet(alphaLink, alphabet);
+        alphaLink.textContent = alphabet;
+        alphaLink.className = "alphabet-chip-inactive";
+        alphabetList.appendChild(alphaLink);
+    });
+}
+
+function filterByAlphabet(alphaLink, letter) {
+
+    let filterByAlphabet = true;
+
+    if (alphaLink.classList.contains("alphabet-chip-active")) {
+        alphaLink.classList.remove("alphabet-chip-active");
+        alphaLink.classList.add("alphabet-chip-inactive");
+        filterByAlphabet = false;
+    }
+    else {
+
+        document.querySelectorAll("#alphabetList a").forEach(link => {
+            link.classList.remove("alphabet-chip-active");
+            link.classList.add("alphabet-chip-inactive");
+        });
+
+        alphaLink.classList.remove("alphabet-chip-inactive");
+        alphaLink.classList.add("alphabet-chip-active");
+    }
+
+    renderWords(filterByAlphabet, letter);
+}
 ////////////////////////////////////////////////////
 
 searchInput.oninput = renderWords;
@@ -758,3 +798,4 @@ renderWords();
 renderTagFilters();
 populateQuizTags();
 updateStats();
+renderAlphabetList();

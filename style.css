@@ -551,3 +551,70 @@ body.dark .modal-content {
 #sortToggleLabel {
     font-size: 12px;
 }
+
+/* Sticky Header for Vocabulary Section */
+.vocab-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 10px 10px;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    background: rgba(230, 230, 230, 0.0);
+    border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+
+    display: block;
+
+    border-radius: 5px;
+}
+
+body.dark .vocab-header {
+    background: rgba(17, 24, 39, 0.6);
+    border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.vocab-header {
+    backdrop-filter: blur(10px) saturate(140%);
+}
+
+.vocab-header {
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vocab-section {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Alphabet List */
+.alphabet-chip-inactive {
+    display: inline-block;
+    background: #eef2ff;
+    color: #3730a3;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin: 4px;
+    cursor: pointer;
+}
+
+.alphabet-chip-active {
+    display: inline-block;
+    background: #3730a3;
+    color: #eef2ff;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin: 4px;
+    cursor: pointer;
+}
