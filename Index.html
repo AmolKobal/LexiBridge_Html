@@ -33,7 +33,8 @@
                     <h2>Vocabulary</h2>&nbsp;&nbsp;
                 </div>
                 <div style="float: right;">
-                    <button id="openAddModal" style="margin-top: 15px;height: 40px;font-size: 14px;">➕ Add Word</button>
+                    <button id="openAddModal" style="margin-top: 25px;width: 120px;font-size: 14px;" class="smallBtn">➕
+                        Add Word</button>
                 </div>
 
                 <div class="import-export-container">
@@ -42,9 +43,9 @@
                     <button class="smallBtn" onclick="triggerExport()">Export</button>
                 </div>
 
-                <input id="searchInput" placeholder="Search words..." />
+                <input id="searchInput" onchange="renderWords(false, this.value)" placeholder="Search words..." />
 
-                <select id="categoryFilter">
+                <select id="categoryFilter" onchange="renderWords(false, this.value)">
                     <option value="">All Categories</option>
                     <option>Verb</option>
                     <option>Noun</option>
@@ -74,8 +75,8 @@
                 </div>
             </div>
 
-            <div>
-                <label id="wordListLabel"></label>
+            <div style="margin: 10px;">
+                <span id="wordListLabel" class="wordListLabel"></span>
                 <ul id="wordList"></ul>
             </div>
         </div>

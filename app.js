@@ -201,7 +201,7 @@ function renderWords(sortByAlphabet = false, alphabet = "") {
 }
 
 searchInput.oninput = (e) => {
-    renderWords(e.target.value);
+    renderWords(false, e.target.value);
 };
 
 function renderTagFilters() {
@@ -671,7 +671,7 @@ saveWordBtn.onclick = () => {
     renderTagFilters();
     populateQuizTags();
     updateStats();
-    renderWords(editIndex);
+    renderWords(false, editIndex);
 
     wordModal.classList.add("hidden");
 
@@ -790,8 +790,8 @@ function filterByAlphabet(alphaLink, letter) {
 }
 ////////////////////////////////////////////////////
 
-searchInput.oninput = renderWords;
-categoryFilter.onchange = renderWords;
+//searchInput.oninput = renderWords;
+//categoryFilter.onchange = renderWords;
 
 // Initial render
 renderWords();

@@ -102,7 +102,7 @@ select {
     /* soft green */
     color: #166534;
     /* dark green text */
-    padding: 6px 10px;
+    padding-top: 6px;
     border-radius: 6px;
     /* text-decoration: line-through; */
     transition: all 0.3s ease;
@@ -120,7 +120,8 @@ li {
     transition: all 0.2s ease;
 }
 
-li.learned {
+li.learned,
+body.dark li.learned {
     background: #dcfce7;
 }
 
@@ -286,7 +287,7 @@ body.dark select {
 }
 
 body.dark li {
-    background: #1f2933;
+    background: #3b3e41;
 }
 
 body.dark .progress {
@@ -533,7 +534,6 @@ body.dark .modal-content {
 .tag-sort-container {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
 }
 
 .import-export-container {
@@ -568,7 +568,7 @@ body.dark .modal-content {
     -webkit-backdrop-filter: blur(10px);
 
     background: rgba(230, 230, 230, 0.0);
-    border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+    border-bottom: 1px solid rgb(185 193 208 / 60%);
 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 
@@ -618,3 +618,18 @@ body.dark .vocab-header {
     margin: 4px;
     cursor: pointer;
 }
+
+#wordListLabel {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.wordListLabel {
+    font-family: monospace;
+    color: #2965c3;
+    font-weight: bold;
+}
+
+/* body.dark .wordListLabel {
+    color: #35c755;
+} */
